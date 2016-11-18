@@ -1,2 +1,2 @@
 # jugoodma
-schedule app site
+website
