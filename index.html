@@ -31,7 +31,7 @@
 			<div style="margin-top: 50px;">
 				<h3 style="text-align: center;">Search Your Zip Code Here!</h3>
 				<form action="" method="get" style="text-align: center;">
-					<input type="text" name="inputbox" placeholder="Zipcode..." style="padding-left: 4px;">
+					<input type="text" name="inputbox" id="input" placeholder="Zipcode..." style="padding-left: 4px;">
 					<input type="button" onClick="readText(this.form)" value="Submit">
 				</form>
 				<br />
@@ -41,7 +41,8 @@
 		
 		<footer>
 			<div style="margin-top: 200px; width: 100%;">
-				<p style="text-align: center; font-size: 16px; width: 300px; margin: auto;">Hey there! Care to learn more about preventing the spread of Airborne Illnesses? Click <a href="#" >here</a>!</p>
+				<p style="text-align: center; font-size: 18px; width: 300px; margin: auto;">Hey there! Care to learn more about Airborne Illnesses and prevening their spread? Click <a href="https://en.wikipedia.org/wiki/Airborne_disease" >here</a>!</p>
+				<p style="text-align: center; font-size: 18px; width: 300px; margin: auto;">Want to go back to my home site? Click <a href="/~jugoodma">here</a>!</p>
 			</div>
 		</footer>
 		
@@ -102,7 +103,12 @@
 				//aqi = obj2.AQI / 500 * 100;
 				
 				//from state and zip
-				popDen = obj3.results[0].address_components[3].long_name;
+				for (var i = 0; i < obj3.results[0].address_components.length; i++)
+				{
+					if (obj3.results[0].address_components[i].types[0] == "administrative_area_level_1") {
+						popDen = obj3.results[0].address_components[i].long_name;
+					}
+				}
 				popDen = obj4.state[popDen] / 9292816.65 * 100;
 				
 				var result = (popDen * 0.05) + (temperature * 0.30) + (10 * 0.10) + (humidity * 0.30) + (health * 0.05) + (wind * 0.05) + (precip * 0.10) + (uv * 0.05);
