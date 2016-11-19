@@ -21,66 +21,93 @@
 	</head>
 	
 	<body style="font-family: 'Quicksand', sans-serif; background-color: #EDE1D1;">
-		<div class="main" style="margin-top: 100px;">
-			<h1 style="text-align: center;">Search Data!</h1>
-		</div>
-		<div style="margin-top: 50px;">
-			<form action="" method="get" style="text-align: center;">
-				<input type="text" name="inputbox" placeholder="Zipcode...">
-				<input type="button" onClick="readText(this.form)" value="Submit">
-			</form>
-			<p id="output" style="text-align: center;"></p>
-		</div>
+		<header>
+			<div class="main" style="margin-top: 100px;">
+				<h1 style="text-align: center;">Risk of Airborne Illnesses</h1>
+			</div>
+		</header>
+
+		<section>
+			<div style="margin-top: 50px;">
+				<h3 style="text-align: center;">Search Your Zip Code Here!</h3>
+				<form action="" method="get" style="text-align: center;">
+					<input type="text" name="inputbox" placeholder="Zipcode..." style="padding-left: 4px;">
+					<input type="button" onClick="readText(this.form)" value="Submit">
+				</form>
+				<br />
+				<p id="output" style="text-align: center; font-size: 20px;"></p>
+			</div>
+		</section>
+		
+		<footer>
+			<div style="margin-top: 200px; width: 100%;">
+				<p style="text-align: center; font-size: 16px; width: 300px; margin: auto;">Hey there! Care to learn more about preventing the spread of Airborne Illnesses? Click <a href="#" >here</a>!</p>
+			</div>
+		</footer>
 		
 		<script>
-		function httpGet(theUrl)
-		{
-			var xmlHttp = new XMLHttpRequest();
-			xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-			xmlHttp.send( null );
-			return xmlHttp.responseText;
-		}
-		
-		function readText(form)
-		{
-			var postalCode = form.inputbox.value;
-			var popDen, temperature, aqi, humidity, health, wind, precip, uv;
-			health = 33.907; // This is a constant as our web app works only for the U.S. (for now)
-			var result;
+			//Code by Clifford Bakalia, Justin Goodman, and James Gu//
 			
-			var weather = httpGet("http://api.wunderground.com/api/99303080b7a46c90/conditions/q/" + postalCode + ".json");
-			//var AQ = httpGet("http://www.airnowapi.org/aq/forecast/zipCode/?format=application/json&zipCode= + postalCode + &distance=25&API_KEY=69EA226A-9582-4679-82F4-6B280BDD5C85");
-			var state = httpGet("https://maps.googleapis.com/maps/api/geocode/json?address=" + postalCode + "&key=AIzaSyAe4pqY96_TwGm-j9iqf3vlAC9IwUYDc2Y");
-			var zip = httpGet("states.json");
-			obj1 = JSON.parse(weather);
-			//obj2 = JSON.parse(AQ);
-			obj3 = JSON.parse(state);
-			obj4 = JSON.parse(zip);
+			function httpGet(theUrl)
+			{
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+				xmlHttp.send( null );
+				return xmlHttp.responseText;
+			}
 			
-			//from weather
-			humidity = parseInt(obj1.current_observation.relative_humidity);
-			wind = obj1.current_observation.wind_mph / 25 * 100;
-			temperature = obj1.current_observation.temp_c;
-				if (temperature >= 30 && temperature <= 37) {
-					temperature = 100;
-				} else if (temperature > 37) {
-					temperature = 100 - ((temperature - 37) / 23) * 100;
-				} else {
-					temperature = 100 - ((30 - temperature) / 15) * 100;
-				}
-			precip = obj1.current_observation.precip_today_in / 50 * 100;
-			uv = 100 - (obj1.current_observation.UV / 11) * 100;
-			
-			//from AQ
-			//aqi = obj2.AQI / 500 * 100;
-			
-			//from state and zip
-			popDen = obj3.results[0].address_components[3].long_name;
-			popDen = obj4.state[popDen] / 9292816.65 * 100;
-			
-			var result = (popDen * 0.05) + (temperature * 0.30) /*+ (aqi * 0.10)*/ + (humidity * 0.30) + (health * 0.05) + (wind * 0.05) + (precip * 0.10) + (uv * 0.05);
-			document.getElementById("output").innerHTML = "Estimated Risk of Airborne Illness Affecting the Population: " + result.toFixed(2) + "%";
-		}
+			function readText(form)
+			{
+				var postalCode = form.inputbox.value;
+				var popDen, temperature, aqi, humidity, health, wind, precip, uv;
+				health = 33.907; // This is a constant as our web app works only for the U.S. (for now)
+				var result;
+				
+				var weather = httpGet("https://api.wunderground.com/api/99303080b7a46c90/conditions/q/" + postalCode + ".json");
+				//var AQ = httpGet("https://www.airnowapi.org/aq/forecast/zipCode/?zipCode=" + postalCode + "&format=application/json&API_KEY=BD8E4D0F-1773-4B0F-AACC-3A39B2A7819F");
+				var state = httpGet("https://maps.googleapis.com/maps/api/geocode/json?address=" + postalCode + "&key=AIzaSyAe4pqY96_TwGm-j9iqf3vlAC9IwUYDc2Y");
+				var zip = httpGet("states.json");
+				obj1 = JSON.parse(weather);
+				//obj2 = JSON.parse(AQ);
+				obj3 = JSON.parse(state);
+				obj4 = JSON.parse(zip);
+				
+				//from weather
+				humidity = parseInt(obj1.current_observation.relative_humidity);
+				wind = obj1.current_observation.wind_mph;
+					if (wind >= 50) {
+						wind = 100;
+					} else {
+						wind = wind / 50 * 100;
+					}
+				temperature = obj1.current_observation.temp_c;
+					if (temperature >= 30 && temperature <= 37) {
+						temperature = 100;
+					} else if (temperature > 37 && temperature <= 60) {
+						temperature = 100 - ((temperature - 37) / 23) * 100;
+					} else if (temperature < 30 && temperature >= 15) {
+						temperature = 100 - ((30 - temperature) / 15) * 100;
+					} else {
+						temperature = 0;
+					}
+				precip = obj1.current_observation.precip_today_in;
+					if (precip >= 50) {
+						precip = 100;
+					} else {
+						precip = precip / 50 * 100;
+					}
+				uv = 100 - (obj1.current_observation.UV / 11) * 100;
+				
+				//from AQ
+				//aqi = obj2.AQI / 500 * 100;
+				
+				//from state and zip
+				popDen = obj3.results[0].address_components[3].long_name;
+				popDen = obj4.state[popDen] / 9292816.65 * 100;
+				
+				var result = (popDen * 0.05) + (temperature * 0.30) + (10 * 0.10) + (humidity * 0.30) + (health * 0.05) + (wind * 0.05) + (precip * 0.10) + (uv * 0.05);
+				document.getElementById("output").innerHTML = "Estimated Risk of Airborne Illness Affecting the Population of " + obj3.results[0].address_components[1].long_name + ": " + result.toFixed(2) + "%";
+			}
 		</script>
 	</body>
 </html>
