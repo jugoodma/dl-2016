@@ -26,7 +26,7 @@
 		</div>
 		<div style="margin-top: 50px;">
 			<form id="zipSearch" method="post" action="result.php" style="text-align: center;">
-				<input type="text" name="zipcode" value="Zipcode...">
+				<input type="text" name="zipcode" placeholder="Zipcode...">
 				<input type="submit">
 			</form>
 		</div>

@@ -64,7 +64,7 @@
 		popDen = obj4.state[popDen] / 9292816.65 * 100;
 		
 		result = (popDen * 0.20) + (temperature * 0.10) + /*(aqi * 0.20) +*/ (humidity * 0.2) + (health * 0.10) + (wind * 0.10) + (precip * 0.05) + (uv * 0.05);
-		document.getElementById("output").innerHTML = "Estimated Risk of Airborne Illness Affecting the Population: " + result + "%";
+		document.getElementById("output").innerHTML = "Estimated Risk of Airborne Illness Affecting the Population: " + result.toFixed(2) + "%";
 
 		function httpGet(theUrl)
 		{
